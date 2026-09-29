@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>온장 (溫場) - 정(情)과 온기가 있는 손안의 전통시장</title>
+  <!-- Google Fonts: Pretendard & Outfit -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Song+Myung&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- 데스크톱 배경 장식 및 컨트롤러 바 -->
+  <div class="desktop-bg-decorations">
+    <div class="decor-circle circle-1"></div>
+    <div class="decor-circle circle-2"></div>
+    
+    <header class="preview-control-panel">
+      <div class="brand-badge">
+        <span class="badge-dot"></span>
+        <span>온장 (溫場) · Interactive Web Demo v2.0</span>
+      </div>
+      <div class="panel-actions">
+        <button id="seniorModeToggle" class="panel-btn" title="시니어 큰글씨 모드">
+          <i data-lucide="eye"></i>
+          <span>큰글씨 모드</span>
+        </button>
+        <button id="viewModeToggle" class="panel-btn" title="화면 크기 전환">
+          <i data-lucide="smartphone"></i>
+          <span>디바이스 뷰 전환</span>
+        </button>
+        <button id="soundToggle" class="panel-btn" title="효과음">
+          <i data-lucide="volume-2"></i>
+          <span>사운드 ON</span>
+        </button>
+      </div>
+    </header>
+  </div>
+
+  <!-- 메인 디바이스 프레임 래퍼 -->
+  <div class="app-viewport-wrapper">
+    <div class="mobile-phone-frame" id="phoneFrame">
+      <!-- 스마트폰 상태 표시줄 -->
+      <div class="status-bar">
+        <span class="status-time" id="statusClock">15:45</span>
+        <div class="status-notch">
+          <div class="notch-speaker"></div>
+          <div class="notch-cam"></div>
+        </div>
+        <div class="status-icons">
+          <i data-lucide="signal" class="w-3.5 h-3.5"></i>
+          <i data-lucide="wifi" class="w-3.5 h-3.5"></i>
+          <i data-lucide="battery" class="w-4 h-4"></i>
+        </div>
+      </div>
+
+      <!-- 상단 앱 네비게이션 헤더 -->
+      <header class="app-header">
+        <div class="header-location-box" id="locationSelectorBtn">
+          <i data-lucide="map-pin" class="loc-icon"></i>
+          <div class="loc-text">
+            <span class="loc-sub">내 근처 전통시장</span>
+            <span class="loc-main">마포 망원시장 <i data-lucide="chevron-down" class="chevron-sm"></i></span>
+          </div>
+        </div>
+        <div class="header-tools">
+          <button class="icon-btn search-trigger-btn" aria-label="검색">
+            <i data-lucide="search"></i>
+          </button>
+          <button class="icon-btn notif-btn" id="notifBtn" aria-label="알림">
+            <i data-lucide="bell"></i>
+            <span class="notif-badge">2</span>
+          </button>
+          <button class="icon-btn cart-btn-header" id="headerCartBtn" aria-label="장바구니">
+            <i data-lucide="shopping-bag"></i>
+            <span class="cart-count-badge" id="cartCountBadge">0</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- 스크롤 가능한 메인 뷰 컨테이너 -->
+      <main class="app-main-content" id="appMainContent">
+        
+        <!-- [TAB 1: 홈 화면 (Home)] -->
+        <section class="tab-pane active" id="tab-home">
+          <!-- 당일 묶음배송 골든타임 배너 -->
+          <div class="delivery-hero-banner">
+            <div class="hero-tag">
+              <span class="pulse-dot"></span>
+              <span>오늘 19:30 퇴근길 도착</span>
+            </div>
+            <h2 class="hero-title">시장 골목 3개 점포 담아도<br><strong>배송비는 딱 한 번!</strong></h2>
+            <div class="hero-countdown">
+              <i data-lucide="clock" class="w-4 h-4"></i>
+              <span>당일 묶음배송 마감까지</span>
+              <span class="timer-badge" id="bundleTimer">01:42:18</span>
+            </div>
+          </div>
+
+          <!-- 실시간 상인 숏폼 / 라이브 스토리 -->
+          <div class="section-block story-section">
+            <div class="section-header">
+              <div class="title-with-icon">
+                <span class="live-dot-wave"></span>
+                <h3>상인들의 지금 시장 이야기</h3>
+              </div>
+              <span class="sub-link">전체보기</span>
+            </div>
+            <div class="story-scroll-track" id="storyList">
+              <!-- JS로 렌더링 -->
+            </div>
+          </div>
+
+          <!-- 퀵 카테고리 그리드 -->
+          <div class="quick-category-grid">
+            <button class="cat-pill active" data-cat="all">
+              <span class="cat-emoji">✨</span>
+              <span class="cat-label">전체</span>
+            </button>
+            <button class="cat-pill" data-cat="side">
+              <span class="cat-emoji">🍱</span>
+              <span class="cat-label">수제반찬</span>
+            </button>
+            <button class="cat-pill" data-cat="fresh">
+              <span class="cat-emoji">🥬</span>
+              <span class="cat-label">야채/과일</span>
+            </button>
+            <button class="cat-pill" data-cat="meat">
+              <span class="cat-emoji">🥩</span>
+              <span class="cat-label">정육/수산</span>
+            </button>
+            <button class="cat-pill" data-cat="snack">
+              <span class="cat-emoji">🍢</span>
+              <span class="cat-label">시장분식</span>
+            </button>
+            <button class="cat-pill bonus-pill" data-cat="bonus">
+              <span class="cat-emoji">🎁</span>
+              <span class="cat-label">덤(Bonus)특가</span>
+            </button>
+          </div>
+
+          <!-- ⚡ 오늘의 마감 임박 신선 특가 (Time Deals) -->
+          <div class="section-block">
+            <div class="section-header">
+              <div>
+                <h3>⚡ 오늘 입고 신선 마감특가</h3>
+                <p class="section-desc">오후에 입고된 신선 농수산물을 특가로 만나요</p>
+              </div>
+            </div>
+            <div class="deal-horizontal-scroll" id="dealsContainer">
+              <!-- JS 렌더링 -->
+            </div>
+          </div>
+
+          <!-- 🏪 우리동네 단골 시장 맛집 리스트 -->
+          <div class="section-block">
+            <div class="section-header">
+              <div>
+                <h3>🏪 망원시장 인기 상점 모아보기</h3>
+                <p class="section-desc">여러 가게에서 담아도 묶음배송으로 함께 와요</p>
+              </div>
+            </div>
+            <div class="store-card-list" id="storeListContainer">
+              <!-- JS 렌더링 -->
+            </div>
+          </div>
+
+          <!-- 정(情) 나눔 배너 -->
+          <div class="warmth-promo-card">
+            <div class="promo-icon">🎁</div>
+            <div class="promo-content">
+              <h4>온누리상품권 10% 자동할인</h4>
+              <p>모바일 온누리로 결제하고 덤(Bonus) 혜택까지 챙기세요!</p>
+            </div>
+            <button class="promo-btn" id="claimOnnuriBtn">쿠폰받기</button>
+          </div>
+        </section>
+
+        <!-- [TAB 2: 장보기 & 골목 탐방 (Market)] -->
+        <section class="tab-pane" id="tab-market">
+          <div class="market-view-header">
+            <div class="market-title-wrap">
+              <h2>골목 장보기</h2>
+              <span class="market-badge">총 24개 점포 영업중</span>
+            </div>
+            <div class="view-mode-toggle">
+              <button class="mode-btn active" id="btnModeList"><i data-lucide="layout-grid"></i> 리스트</button>
+              <button class="mode-btn" id="btnModeMap"><i data-lucide="map"></i> 골목지도</button>
+            </div>
+          </div>
+
+          <!-- 가상 골목 지도 뷰 (인터랙티브) -->
+          <div class="virtual-alley-map" id="alleyMapView" style="display: none;">
+            <div class="map-skyline">
+              <span>🏮 망원시장 1번 게이트 메인 골목</span>
+            </div>
+            <div class="alley-interactive-board">
+              <div class="map-shop-node node-1 active" data-store="영순이네 반찬">
+                <span class="pin">🍱</span>
+                <span class="node-title">영순이네 반찬</span>
+                <span class="node-tag">덤 증정중</span>
+              </div>
+              <div class="map-shop-node node-2" data-store="망원청과">
+                <span class="pin">🍎</span>
+                <span class="node-title">망원청과</span>
+                <span class="node-tag">당일입고</span>
+              </div>
+              <div class="map-shop-node node-3" data-store="마포축산">
+                <span class="pin">🥩</span>
+                <span class="node-title">마포축산</span>
+                <span class="node-tag">한우 1++</span>
+              </div>
+              <div class="map-shop-node node-4" data-store="원조 망원빈대떡">
+                <span class="pin">🥞</span>
+                <span class="node-title">망원빈대떡</span>
+                <span class="node-tag">따끈조리</span>
+              </div>
+            </div>
+            <p class="map-hint">💡 점포를 누르면 해당 상점의 대표 상품을 바로 담을 수 있어요.</p>
+          </div>
+
+          <!-- 상품 필터 칩 -->
+          <div class="filter-chip-bar">
+            <button class="chip active">전체 (18)</button>
+            <button class="chip">오늘 덤(Bonus) 증정 🎁</button>
+            <button class="chip">1인 가구 소포장</button>
+            <button class="chip">당일 직송</button>
+          </div>
+
+          <!-- 통합 상품 리스트 -->
+          <div class="product-grid" id="marketProductGrid">
+            <!-- JS 렌더링 -->
+          </div>
+        </section>
+
+        <!-- [TAB 3: 동네소식 & 상인 손편지 (Community)] -->
+        <section class="tab-pane" id="tab-community">
+          <div class="community-header">
+            <h2>동네 이야기 & 상인 소식</h2>
+            <p>매일 아침 상인들의 생생한 입고 소식과 이웃들의 장바구니 후기</p>
+          </div>
+
+          <div class="community-post-feed" id="communityFeed">
+            <!-- JS 렌더링 -->
+          </div>
+        </section>
+
+        <!-- [TAB 4: 묶음 장바구니 (Cart)] -->
+        <section class="tab-pane" id="tab-cart">
+          <div class="cart-screen-header">
+            <h2>시장 묶음 장바구니</h2>
+            <span class="cart-store-count" id="cartStoreCountText">0개 점포 0개 상품</span>
+          </div>
+
+          <!-- 무료 묶음배송 프로그레스 게이지 -->
+          <div class="delivery-progress-card">
+            <div class="progress-info">
+              <div class="prog-title">
+                <i data-lucide="truck" class="w-4 h-4"></i>
+                <span id="progressText">30,000원 채우면 <strong>배송비 0원</strong>!</span>
+              </div>
+              <span class="prog-amount" id="progressRemaining">30,000원 남음</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+            </div>
+            <div class="delivery-badge-note">
+              <span>✨ 망원시장 안 모든 점포 상품 통합 묶음배송 적용 중</span>
+            </div>
+          </div>
+
+          <!-- 상점별 그룹화된 장바구니 목록 -->
+          <div class="cart-items-grouped" id="cartItemsContainer">
+            <!-- 장바구니 비었을 때 / 담겼을 때 JS 렌더링 -->
+          </div>
+
+          <!-- 단골 '덤(Bonus)' 선택 카드 (주문 금액 2만원 이상 시 활성화) -->
+          <div class="bonus-select-box" id="bonusSelectBox">
+            <div class="bonus-box-header">
+              <div class="bonus-title-badge">
+                <i data-lucide="gift"></i>
+                <span>상인의 정(情) 덤(Bonus) 선물</span>
+              </div>
+              <span class="bonus-status" id="bonusStatusLabel">선택 완료</span>
+            </div>
+            <p class="bonus-subtext" id="bonusDescText">20,000원 이상 구매 시 사장님이 드리는 무료 맛보기 반찬!</p>
+            <div class="bonus-choice-list" id="bonusChoiceList">
+              <label class="bonus-radio-label">
+                <input type="radio" name="bonusItem" value="고소한 멸치볶음 50g" checked>
+                <div class="radio-custom"></div>
+                <span class="bonus-name">🥜 고소한 멸치볶음 50g (영순이네 반찬)</span>
+                <span class="bonus-tag">무료증정</span>
+              </label>
+              <label class="bonus-radio-label">
+                <input type="radio" name="bonusItem" value="아삭한 깍두기 맛보기팩">
+                <div class="radio-custom"></div>
+                <span class="bonus-name">🌶️ 아삭 깍두기 맛보기팩</span>
+                <span class="bonus-tag">무료증정</span>
+              </label>
+              <label class="bonus-radio-label">
+                <input type="radio" name="bonusItem" value="사장님 응원 메시지만 보내기">
+                <div class="radio-custom"></div>
+                <span class="bonus-name">💌 덤 대신 상인님께 따뜻한 응원 편지 쓰기</span>
+                <span class="bonus-tag">온기나눔</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- 배송 희망 시간 선택 -->
+          <div class="delivery-time-picker-card">
+            <h4><i data-lucide="clock" class="w-4 h-4"></i> 도착 희망 시간</h4>
+            <div class="time-slots">
+              <button class="time-slot active" data-time="오늘 18:30 ~ 19:30 (퇴근길 도착)">
+                <span class="slot-time">오늘 18:30 ~ 19:30</span>
+                <span class="slot-desc">퇴근길 저녁준비 맞춤</span>
+              </button>
+              <button class="time-slot" data-time="오늘 20:30 ~ 21:30 (야식/마감)">
+                <span class="slot-time">오늘 20:30 ~ 21:30</span>
+                <span class="slot-desc">당일 야식 & 내일 아침</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 결제 요약 계산서 -->
+          <div class="cart-summary-card">
+            <div class="summary-row">
+              <span>상품 총액</span>
+              <span id="sumItemsPrice">0원</span>
+            </div>
+            <div class="summary-row">
+              <span>시장 묶음배송비</span>
+              <span id="sumDeliveryFee">3,000원</span>
+            </div>
+            <div class="summary-row discount-row">
+              <span>모바일 온누리상품권 10% 혜택</span>
+              <span id="sumOnnuriDiscount">-0원</span>
+            </div>
+            <div class="summary-row total-row">
+              <span>최종 결제예정금액</span>
+              <span class="total-price" id="sumFinalPrice">0원</span>
+            </div>
+          </div>
+
+          <!-- 주문하기 CTA -->
+          <button class="order-submit-btn" id="btnCheckout">
+            <span id="checkoutBtnText">0원 묶음배송 주문하기</span>
+            <i data-lucide="arrow-right"></i>
+          </button>
+        </section>
+
+        <!-- [TAB 5: 배송 현황 & 마이페이지 (My Page)] -->
+        <section class="tab-pane" id="tab-mypage">
+          <div class="mypage-user-profile">
+            <div class="avatar-wrap">
+              <div class="user-avatar">지은</div>
+              <span class="vip-badge">망원 단골 3단</span>
+            </div>
+            <div class="user-meta">
+              <h3>이지은 님</h3>
+              <p>이번 달 전통시장 묶음배송으로 <strong>14,200원</strong> 절약했어요 🌱</p>
+            </div>
+          </div>
+
+          <!-- 진행 중인 실시간 주문 배송 라이브 트래커 -->
+          <div class="active-order-tracker-card" id="activeOrderTracker">
+            <div class="tracker-header">
+              <div class="tag-live">
+                <span class="pulse-green"></span>
+                <span>실시간 배송 진행중</span>
+              </div>
+              <span class="order-est-time">18:45 도착 예정</span>
+            </div>
+            
+            <h4 class="tracker-main-msg" id="trackerMainMsg">시장 배송 매니저가 점포를 순회하며 픽업 중입니다.</h4>
+            
+            <!-- 3단계 스텝 게이지 -->
+            <div class="stepper-track">
+              <div class="step-node active" id="step1">
+                <div class="circle"><i data-lucide="store"></i></div>
+                <span>점포 순회 픽업</span>
+              </div>
+              <div class="step-line active" id="line1"></div>
+              <div class="step-node active" id="step2">
+                <div class="circle"><i data-lucide="package-check"></i></div>
+                <span>통합 검수·포장</span>
+              </div>
+              <div class="step-line" id="line2"></div>
+              <div class="step-node" id="step3">
+                <div class="circle"><i data-lucide="bike"></i></div>
+                <span>당일 라이더 배송</span>
+              </div>
+            </div>
+
+            <div class="tracker-detail-box">
+              <div class="detail-item">
+                <span class="label">픽업 점포:</span>
+                <span class="val">영순이네 반찬(완료), 마포축산(완료), 망원청과(담는 중)</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">안심 보랭:</span>
+                <span class="val text-success">친환경 다회용 보랭백 적용 ❄️</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 온누리 상품권 & 단골 스탬프 카드 -->
+          <div class="wallet-card-grid">
+            <div class="wallet-card">
+              <span class="w-label">모바일 온누리상품권</span>
+              <span class="w-val">45,000원</span>
+              <button class="w-btn">충전 +10%</button>
+            </div>
+            <div class="wallet-card">
+              <span class="w-label">누적 덤(Bonus) 수령</span>
+              <span class="w-val">12회 🎁</span>
+              <button class="w-btn">내역보기</button>
+            </div>
+          </div>
+
+          <!-- 마이페이지 메뉴 리스트 -->
+          <div class="mypage-menu-list">
+            <div class="menu-item">
+              <i data-lucide="heart" class="w-5 h-5 text-coral"></i>
+              <span>단골 찜한 상점 목록 (5)</span>
+              <i data-lucide="chevron-right" class="chevron"></i>
+            </div>
+            <div class="menu-item">
+              <i data-lucide="receipt" class="w-5 h-5 text-emerald"></i>
+              <span>과거 장보기 주문 내역</span>
+              <i data-lucide="chevron-right" class="chevron"></i>
+            </div>
+            <div class="menu-item">
+              <i data-lucide="message-square-heart" class="w-5 h-5 text-amber"></i>
+              <span>상인님께 남긴 감사 리뷰</span>
+              <i data-lucide="chevron-right" class="chevron"></i>
+            </div>
+            <div class="menu-item">
+              <i data-lucide="settings" class="w-5 h-5 text-slate"></i>
+              <span>앱 환경설정 및 배송지 관리</span>
+              <i data-lucide="chevron-right" class="chevron"></i>
+            </div>
+          </div>
+        </section>
+
+      </main>
+
+      <!-- 플로팅 묶음 장바구니 바 (홈/장보기 화면에서 카트에 물건 있을 때 표시) -->
+      <div class="floating-cart-bar" id="floatingCartBar" style="display: none;">
+        <div class="float-left">
+          <div class="cart-icon-bubble">
+            <i data-lucide="shopping-cart"></i>
+            <span class="bubble-count" id="floatCartCount">0</span>
+          </div>
+          <div class="float-text">
+            <span class="float-stores" id="floatStoreCount">2개 점포 묶음 담김</span>
+            <span class="float-price" id="floatCartPrice">0원</span>
+          </div>
+        </div>
+        <button class="float-cta-btn" id="btnGoCartFromFloat">
+          <span>장바구니 보기</span>
+          <i data-lucide="chevron-right"></i>
+        </button>
+      </div>
+
+      <!-- 하단 탭바 네비게이션 (Bottom Navigation) -->
+      <nav class="app-bottom-nav">
+        <button class="nav-tab-btn active" data-tab="tab-home">
+          <i data-lucide="home"></i>
+          <span>홈</span>
+        </button>
+        <button class="nav-tab-btn" data-tab="tab-market">
+          <i data-lucide="store"></i>
+          <span>골목장보기</span>
+        </button>
+        <button class="nav-tab-btn" data-tab="tab-community">
+          <i data-lucide="newspaper"></i>
+          <span>동네이야기</span>
+        </button>
+        <button class="nav-tab-btn cart-nav-btn" data-tab="tab-cart">
+          <div class="nav-cart-wrapper">
+            <i data-lucide="shopping-bag"></i>
+            <span class="nav-cart-badge" id="navCartBadge">0</span>
+          </div>
+          <span>장바구니</span>
+        </button>
+        <button class="nav-tab-btn" data-tab="tab-mypage">
+          <i data-lucide="user"></i>
+          <span>마이페이지</span>
+        </button>
+      </nav>
+
+      <!-- 홈 인디케이터 바 -->
+      <div class="home-indicator"></div>
+    </div>
+  </div>
+
+  <!-- [모달 1: 상인 숏폼 스토리 플레이어 모달] -->
+  <div class="modal-overlay" id="storyModalOverlay">
+    <div class="story-modal-card">
+      <button class="story-close-btn" id="closeStoryModal">&times;</button>
+      <div class="story-progress-bars">
+        <div class="story-bar-fill"></div>
+      </div>
+      <div class="story-header-info">
+        <div class="story-avatar" id="storyModalAvatar">🍱</div>
+        <div>
+          <h4 id="storyModalStore">영순이네 반찬</h4>
+          <span class="story-badge-live">🔴 LIVE 스토리</span>
+        </div>
+      </div>
+      
+      <!-- 스토리 비디오 시뮬레이션 영역 -->
+      <div class="story-visual-canvas" id="storyModalVisual">
+        <div class="story-emoji-hero" id="storyModalEmoji">🥘</div>
+        <div class="story-quote-card">
+          <p id="storyModalQuote">"새벽에 직접 끓인 달래된장찌개 오늘 10통만 딱 끓였습니다! 덤으로 멸치볶음도 얹어드려요~"</p>
+        </div>
+      </div>
+
+      <div class="story-modal-footer">
+        <div class="story-prod-quick">
+          <span class="prod-tag">스토리 추천 상품</span>
+          <span class="prod-name" id="storyProdName">수제 달래된장찌개 밀키트</span>
+          <span class="prod-price" id="storyProdPrice">7,000원</span>
+        </div>
+        <button class="story-add-cart-btn" id="storyAddCartBtn">
+          <i data-lucide="plus"></i> 바로 담기
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- [모달 2: 주문 완료 축하 모달] -->
+  <div class="modal-overlay" id="orderSuccessModal">
+    <div class="success-modal-card">
+      <div class="success-icon-wrap">🎉</div>
+      <h3>주문이 접수되었습니다!</h3>
+      <p class="success-sub">망원시장 <strong><span id="orderSuccessStoreCount">3</span>개 점포</strong>에서 상품을 준비 중입니다.</p>
+      
+      <div class="success-summary-box">
+        <div class="s-row">
+          <span>도착 예정:</span>
+          <strong>오늘 저녁 18:30 ~ 19:30</strong>
+        </div>
+        <div class="s-row">
+          <span>포함된 덤(Bonus):</span>
+          <strong class="text-coral" id="successBonusName">고소한 멸치볶음 50g</strong>
+        </div>
+        <div class="s-row">
+          <span>최종 결제 금액:</span>
+          <strong id="successTotalPaid">24,500원</strong>
+        </div>
+      </div>
+
+      <button class="success-action-btn" id="btnTrackOrder">
+        실시간 배송 현황 보기
+      </button>
+    </div>
+  </div>
+
+  <!-- 토스트 알림 컨테이너 -->
+  <div class="toast-notification-container" id="toastContainer"></div>
+
+  <!-- 앱 스크립트 -->
+  <script src="app.js"></script>
+</body>
+</html>
