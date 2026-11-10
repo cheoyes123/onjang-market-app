@@ -1,0 +1,47 @@
+<!-- 온장 핵심 UI 컴포넌트 샘플 코드 스니펫 -->
+
+<!-- 1. 무료 묶음배송 프로그레스 게이지 컴포넌트 -->
+<div class="delivery-progress-card" style="background:#fff; padding:16px; border-radius:16px; border:1px solid #E5E7EB; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+  <div style="display:flex; justify-content:space-between; font-size:14px; margin-bottom:8px;">
+    <span>🚚 30,000원 채우면 <strong>배송비 0원!</strong></span>
+    <span style="font-weight:700; color:#FF5A1F;">3,100원 남음</span>
+  </div>
+  <div style="width:100%; height:8px; background:#F3F4F6; border-radius:4px; overflow:hidden;">
+    <div style="width:85%; height:100%; background:linear-gradient(90deg, #FF5A1F, #10B981); border-radius:4px;"></div>
+  </div>
+  <div style="font-size:12px; color:#1E5A3E; margin-top:8px; font-weight:600;">
+    ✨ 망원시장 안 모든 점포 상품 통합 묶음배송 적용 중
+  </div>
+</div>
+
+<!-- 2. 단골 '덤(Bonus)' 선택 라디오 박스 -->
+<div class="bonus-select-box" style="background:#FFFDF5; border:1.5px solid #FDE68A; border-radius:16px; padding:16px; margin-top:16px;">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+    <strong style="color:#92400E; font-size:14px;">🎁 상인의 정(情) 덤(Bonus) 선물</strong>
+    <span style="color:#10B981; font-size:12px; font-weight:700;">선택 완료</span>
+  </div>
+  <p style="font-size:12px; color:#78350F; margin-bottom:12px;">20,000원 이상 구매 시 사장님이 드리는 무료 맛보기 반찬!</p>
+  
+  <label style="display:flex; align-items:center; gap:8px; background:#fff; border:1px solid #FEF08A; padding:10px 12px; border-radius:10px; cursor:pointer;">
+    <input type="radio" name="bonusItem" checked style="accent-color:#FF5A1F;">
+    <span style="font-size:13px; font-weight:600;">🥜 고소한 멸치볶음 50g (영순이네 반찬)</span>
+    <span style="margin-left:auto; font-size:11px; background:#F59E0B; color:#78350F; padding:2px 6px; border-radius:4px; font-weight:700;">무료증정</span>
+  </label>
+</div>
+
+<!-- 3. 실시간 3단계 배송 트래커 -->
+<div class="tracker-card" style="background:#fff; border:2px solid #10B981; border-radius:16px; padding:16px; margin-top:16px;">
+  <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+    <span style="background:#E8F5EE; color:#1E5A3E; font-size:12px; font-weight:700; padding:3px 8px; border-radius:20px;">🟢 실시간 배송 진행중</span>
+    <span style="color:#FF5A1F; font-size:13px; font-weight:700;">18:45 도착 예정</span>
+  </div>
+  <h4 style="font-size:15px; font-weight:800; margin-bottom:16px;">시장 배송 매니저가 점포를 순회하며 픽업 중입니다.</h4>
+  
+  <div style="display:flex; align-items:center; justify-content:space-between; text-align:center; font-size:11px; font-weight:600;">
+    <div style="flex:1; color:#10B981;">① 점포 순회 픽업 (진행중)</div>
+    <div style="width:20px; height:2px; background:#10B981;"></div>
+    <div style="flex:1; color:#9CA3AF;">② 통합 검수·포장</div>
+    <div style="width:20px; height:2px; background:#E5E7EB;"></div>
+    <div style="flex:1; color:#9CA3AF;">③ 라이더 배송</div>
+  </div>
+</div>
